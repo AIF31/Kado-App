@@ -42,7 +42,7 @@ export const ConsultationForm = ({ consultation, results, onChange }) => {
                     <div className="flex items-end pb-2">
                         <div className="flex flex-col">
                             <label className="block text-xs font-medium text-slate-500 mb-1 uppercase tracking-wide">Tasa Calculada</label>
-                            <span className="font-bold text-[#003844] text-xl">{results.sweatRate} L/hr</span>
+                            <span className="font-bold text-kado-main text-xl">{results.sweatRate} L/hr</span>
                         </div>
                     </div>
                 </div>

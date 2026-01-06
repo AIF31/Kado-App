@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ResultRow = ({ label, value, unit, status, statusColor = 'text-[#96DFCD]' }) => (
+export const ResultRow = ({ label, value, unit, status, statusColor = 'text-kado-teal' }) => (
     <div className="flex justify-between items-end">
         <div>
             <p className="text-xs text-slate-300 mb-0.5">{label}</p>
@@ -14,9 +14,9 @@ export const ResultRow = ({ label, value, unit, status, statusColor = 'text-[#96
 );
 
 export const TdeeRow = ({ label, kcal, highlight }) => (
-    <div className={`flex justify-between items-center p-2 rounded ${highlight ? 'bg-[#96DFCD] border border-[#96DFCD]/30 shadow-sm' : ''}`}>
-        <span className={`text-sm ${highlight ? 'text-[#003844] font-semibold' : 'text-slate-600'}`}>{label}</span>
-        <span className="font-bold text-[#003844]">{kcal} kcal</span>
+    <div className={`flex justify-between items-center p-2 rounded ${highlight ? 'bg-kado-teal border border-kado-teal/30 shadow-sm' : ''}`}>
+        <span className={`text-sm ${highlight ? 'text-kado-main font-semibold' : 'text-slate-600'}`}>{label}</span>
+        <span className="font-bold text-kado-main">{kcal} kcal</span>
     </div>
 );
 

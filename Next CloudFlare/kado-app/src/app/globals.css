@@ -1,27 +1,24 @@
 @import "tailwindcss";
-@import "./App.css";
+
+@theme {
+  --color-kado-main: #003844;
+  --color-kado-teal: #9EE7D7;
+  --color-kado-light: #DFF5F2;
+  --color-kado-cream: #F4FBE0;
+  --color-kado-coral: #FF6B5C;
+  --color-kado-lime: #E6F45A;
+
+  --font-jost: "Jost", sans-serif;
+  --font-outfit: "Outfit", sans-serif;
+}
 
 :root {
-	--background: #ffffff;
-	--foreground: #171717;
-}
-
-@theme inline {
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--font-sans: var(--font-geist-sans);
-	--font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
-	}
+  --background: #ffffff;
+  --foreground: #003844;
 }
 
 body {
-	background: var(--background);
-	color: var(--foreground);
-	font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-jost);
 }

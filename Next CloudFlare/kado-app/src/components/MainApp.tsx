@@ -6,6 +6,7 @@ import { Header } from "../components/layout/Header";
 import { PatientCard } from "../features/patient/PatientCard";
 import { PatientForm } from "../features/patient/PatientForm";
 import { ConsultationForm } from "../features/consultation/ConsultationForm";
+import { MedicalHistoryForm } from "../features/patient/MedicalHistoryForm";
 import { DiagnosticSummary } from "../features/dashboard/DiagnosticSummary";
 import { generateDiagnosticSummary } from "../services/geminiService";
 import { saveConsultation } from "../services/consultationService";
@@ -24,16 +25,48 @@ import {
 
 export const MainApp = () => {
     // --- STATE ---
+    const [mainTab, setMainTab] = useState("evaluation");
+    const [activeTab, setActiveTab] = useState("general");
 
     // Patient Data
     const [patient, setPatient] = useState({
         name: "",
-        gender: "M",
+        gender: "M", // Sexo Biológico (para cálculos)
         dob: "",
         height: 0,
+        tobacco: "no", // 'no', 'former', 'current'
+        disability: "",
+        mobility: "",
+        ethnicity: "",
+        language: "",
+        literacy: "",
+        education: "",
+        familyRole: "",
         history: "",
         activityLevel: 1.375,
         goal: "",
+    });
+
+    // Medical History Data
+    const [medicalHistory, setMedicalHistory] = useState({
+        systems: {}, // { cardio: ['P'], gastro: ['P', 'F'] }
+        otherNotes: "",
+        treatments: {
+            medical: "",
+            surgical: "",
+            palliative: ""
+        },
+        social: {
+            socioeconomic: "",
+            housing: "",
+            domestic: "",
+            support: "",
+            location: "",
+            occupation: "",
+            religion: "",
+            crisis: "",
+            stress: ""
+        }
     });
 
     // Consultation Data
@@ -160,6 +193,11 @@ export const MainApp = () => {
         setConsultation((prev) => ({ ...prev, [name]: parseFloat(value) || 0 }));
     };
 
+    const handleHistoryChange = (e: any) => {
+        const { name, value } = e.target;
+        setMedicalHistory((prev) => ({ ...prev, [name]: value }));
+    };
+
     const handleGenerateSummary = async () => {
         setIsLoadingSummary(true);
         setDiagnosticSummary("");
@@ -198,7 +236,7 @@ export const MainApp = () => {
 
     // --- RENDER ---
     return (
-        <div className="flex h-screen bg-slate-50 font-sans text-[#003844]">
+        <div className="flex h-screen bg-slate-50 font-jost text-kado-main">
             <Sidebar />
             <main className="flex-1 overflow-auto">
                 <Header />
@@ -209,32 +247,85 @@ export const MainApp = () => {
                         genderLabel={patient.gender === "F" ? "Femenino" : "Masculino"}
                     />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* Left Column: Data Entry */}
-                        <div className="lg:col-span-7 space-y-8">
-                            <PatientForm
-                                patient={patient}
-                                onChange={handlePatientChange}
-                            />
-                            <ConsultationForm
-                                consultation={consultation}
-                                results={results}
-                                onChange={handleConsultationChange}
-                            />
-                        </div>
-
-                        {/* Right Column: Dashboard & Visualization */}
-                        <div className="lg:col-span-5 space-y-6">
-                            <DiagnosticSummary
-                                results={results}
-                                diagnosticSummary={diagnosticSummary}
-                                isLoadingSummary={isLoadingSummary}
-                                onGenerateSummary={handleGenerateSummary}
-                                onSave={handleSave}
-                                isSaving={isSaving}
-                            />
-                        </div>
+                    {/* Main Tabs Navigation */}
+                    <div className="flex justify-center border-b border-slate-200 mb-8">
+                        <button
+                            onClick={() => setMainTab("evaluation")}
+                            className={`px-8 py-3 text-sm font-bold border-b-2 transition-colors ${mainTab === "evaluation"
+                                ? "border-kado-teal text-kado-main"
+                                : "border-transparent text-slate-400 hover:text-kado-main"
+                                }`}
+                        >
+                            Evaluación
+                        </button>
+                        <button
+                            onClick={() => setMainTab("diagnosis")}
+                            className={`px-8 py-3 text-sm font-bold border-b-2 transition-colors ${mainTab === "diagnosis"
+                                ? "border-kado-teal text-kado-main"
+                                : "border-transparent text-slate-400 hover:text-kado-main"
+                                }`}
+                        >
+                            Diagnóstico
+                        </button>
                     </div>
+
+                    {mainTab === "evaluation" ? (
+                        <div className="max-w-4xl mx-auto space-y-6">
+                            <div className="flex p-1 bg-slate-100 rounded-xl mb-6">
+                                <button
+                                    onClick={() => setActiveTab("general")}
+                                    className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === "general"
+                                        ? "bg-white text-kado-main shadow-sm"
+                                        : "text-slate-400 hover:text-kado-main"
+                                        }`}
+                                >
+                                    Datos Base
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("history")}
+                                    className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${activeTab === "history"
+                                        ? "bg-white text-kado-main shadow-sm"
+                                        : "text-slate-400 hover:text-kado-main"
+                                        }`}
+                                >
+                                    Antecedentes Médicos
+                                </button>
+                            </div>
+
+                            {activeTab === "general" ? (
+                                <PatientForm
+                                    patient={patient}
+                                    onChange={handlePatientChange}
+                                />
+                            ) : (
+                                <MedicalHistoryForm
+                                    history={medicalHistory}
+                                    onChange={handleHistoryChange}
+                                />
+                            )}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            <div className="lg:col-span-7 space-y-6">
+                                <ConsultationForm
+                                    consultation={consultation}
+                                    results={results}
+                                    onChange={handleConsultationChange}
+                                />
+                            </div>
+
+                            <div className="lg:col-span-5 space-y-6">
+                                <DiagnosticSummary
+                                    results={results}
+                                    diagnosticSummary={diagnosticSummary}
+                                    isLoadingSummary={isLoadingSummary}
+                                    onGenerateSummary={handleGenerateSummary}
+                                    onSave={handleSave}
+                                    isSaving={isSaving}
+                                />
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
         </div>
